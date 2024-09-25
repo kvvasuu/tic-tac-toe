@@ -3,9 +3,10 @@ import { useState, useRef } from "react";
 interface Props {
   name: string;
   symbol: "X" | "O";
+  isPlaying: boolean;
 }
 
-const Player = ({ name, symbol }: Props) => {
+const Player = ({ name, symbol, isPlaying }: Props) => {
   const [playerName, setPlayerName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,14 +22,17 @@ const Player = ({ name, symbol }: Props) => {
 
         <span className="player-symbol">{symbol}</span>
       </span>
-      <button
-        onClick={() => {
-          setIsEditing(!isEditing);
-          if (isEditing) setPlayerName(inputRef.current?.value || "");
-        }}
-      >
-        {!isEditing ? "Edit" : "Save"}
-      </button>
+      {!isPlaying && (
+        <button
+          onClick={() => {
+            setIsEditing((state) => !state);
+            if (isEditing && inputRef.current?.value !== "")
+              setPlayerName(inputRef.current?.value || "");
+          }}
+        >
+          {!isEditing ? "Edit" : "Save"}
+        </button>
+      )}
     </li>
   );
 };
