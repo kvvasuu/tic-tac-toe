@@ -35,7 +35,15 @@ header {
     width: 8rem;
     object-fit: contain;
     margin: 3rem auto 1rem auto;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 0 0.5rem rgba(0, 0, 0, 0.4));
+    transition: all 0.3s ease;
+    &:hover {
+      filter: drop-shadow(0 0 1rem rgba(0, 0, 0, 0.4));
+      scale: 1.02;
+    }
+  }
+  h1 {
+    user-select: none;
   }
 }
 
