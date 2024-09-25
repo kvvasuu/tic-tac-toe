@@ -18,16 +18,11 @@ const GameBoard = ({ currentPlayer, changePlayer, isPlaying }: Props) => {
   const [gameBoard, setGameBoard] = useState(initialGameBoard);
 
   const updateBoard = (value: CellValue, row: number, col: number) => {
-    const newBoard = gameBoard.map((rowArr, rowIndex) =>
-      rowArr.map((cell, colIndex) => {
-        if (rowIndex === row && colIndex === col) {
-          console.log(value);
-          return value;
-        }
-        return cell;
-      })
-    );
-    setGameBoard(newBoard);
+    setGameBoard((newBoard) => {
+      [...newBoard.map((inner) => [...inner])];
+      newBoard[row][col] = value;
+      return newBoard;
+    });
   };
 
   const selectSquare = (symbol: CellValue, row: number, col: number) => {
