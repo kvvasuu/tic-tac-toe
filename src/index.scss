@@ -161,6 +161,11 @@ ol {
     font-size: 4rem;
     text-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
     animation: pulse-text-size 2s infinite ease-out;
+    &.disabled {
+      opacity: 0.3;
+      animation: none;
+      cursor: not-allowed;
+    }
   }
 }
 

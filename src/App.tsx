@@ -26,8 +26,13 @@ const deriveActivePlayer = (turns: logRecord[]) => {
 };
 
 function App() {
+  const [playerNames, setPlayerNames] = useState({
+    X: "Player 1",
+    O: "Player 2",
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameTurns, setGameTurns] = useState<logRecord[]>([]);
+  const [editing, setEditing] = useState(false);
 
   const activePlayer = deriveActivePlayer(gameTurns);
 
@@ -72,6 +77,15 @@ function App() {
     });
   };
 
+  const changePlayerName = (player: "X" | "O", playerName: string) => {
+    setPlayerNames((names) => {
+      return {
+        ...names,
+        [player]: playerName,
+      };
+    });
+  };
+
   const restartGame = () => {
     gameBoard = initialGameBoard;
     setGameTurns([]);
@@ -83,20 +97,25 @@ function App() {
       <div id="game-container">
         <ol id="players">
           <Player
-            name="Player 1"
+            name={playerNames.X}
             symbol="X"
             isPlaying={isPlaying}
             isActive={activePlayer === "X"}
+            changePlayerName={changePlayerName}
+            setEditing={() => setEditing((state) => !state)}
           />
           <Player
-            name="Player 2"
+            name={playerNames.O}
             symbol="O"
             isPlaying={isPlaying}
             isActive={activePlayer === "O"}
+            changePlayerName={changePlayerName}
+            setEditing={() => setEditing((state) => !state)}
           />
         </ol>
         {!isPlaying ? (
           <PreGame
+            editing={editing}
             startGame={() => {
               setIsPlaying(true);
             }}
@@ -104,7 +123,10 @@ function App() {
         ) : (
           <>
             {(winner || isDraw) && (
-              <GameOver restartGame={restartGame} winner={winner} />
+              <GameOver
+                restartGame={restartGame}
+                winner={playerNames[winner || "X"]}
+              />
             )}
             <GameBoard selectSquare={selectSquare} turns={gameBoard} />
           </>

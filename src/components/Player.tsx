@@ -1,13 +1,24 @@
 import { useState, useRef } from "react";
 
+import { PlayerSymbol } from "../types";
+
 interface Props {
   name: string;
-  symbol: "X" | "O";
+  symbol: PlayerSymbol;
   isPlaying: boolean;
   isActive?: boolean;
+  changePlayerName: (symbol: PlayerSymbol, name: string) => void;
+  setEditing: () => void;
 }
 
-const Player = ({ name, symbol, isPlaying, isActive }: Props) => {
+const Player = ({
+  name,
+  symbol,
+  isPlaying,
+  isActive,
+  changePlayerName,
+  setEditing,
+}: Props) => {
   const [playerName, setPlayerName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,8 +38,11 @@ const Player = ({ name, symbol, isPlaying, isActive }: Props) => {
         <button
           onClick={() => {
             setIsEditing((state) => !state);
-            if (isEditing && inputRef.current?.value !== "")
+            setEditing();
+            if (isEditing && inputRef.current?.value !== "") {
               setPlayerName(inputRef.current?.value || "");
+              changePlayerName(symbol, inputRef.current?.value || "");
+            }
           }}
         >
           {!isEditing ? "Edit" : "Save"}
