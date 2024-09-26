@@ -9,10 +9,8 @@ const Log = ({ gameTurns }: Props) => {
     <ol id="log">
       {gameTurns.map((turn) => {
         return (
-          <li>
-            <span>{turn.square.row}</span>
-            <span>{turn.square.col}</span>
-            <span>{turn.player}</span>
+          <li key={`${turn.square.row}${turn.square.col}`}>
+            {turn.player} selected {turn.square.row}, {turn.square.col}
           </li>
         );
       })}
