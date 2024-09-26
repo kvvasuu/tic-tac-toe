@@ -4,16 +4,16 @@ interface Props {
   name: string;
   symbol: "X" | "O";
   isPlaying: boolean;
-  active?: boolean;
+  isActive?: boolean;
 }
 
-const Player = ({ name, symbol, isPlaying, active }: Props) => {
+const Player = ({ name, symbol, isPlaying, isActive }: Props) => {
   const [playerName, setPlayerName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <li className={active && isPlaying ? "active" : undefined}>
+    <li className={isActive && isPlaying ? "active" : undefined}>
       <span className="player">
         {!isEditing ? (
           <span className="player-name">{playerName}</span>

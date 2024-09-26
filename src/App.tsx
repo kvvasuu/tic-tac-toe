@@ -2,10 +2,37 @@ import { useState } from "react";
 import Player from "./components/Player";
 import GameBoard from "./components/GameBoard";
 import PreGame from "./components/PreGame";
+import Log from "./components/Log";
+
+import { CellValue, logRecord } from "./types";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
+
+  const [gameTurns, setGameTurns] = useState<logRecord[]>([]);
+
+  const selectSquare = (symbol: CellValue, row: number, col: number) => {
+    if (symbol || !isPlaying) {
+      return;
+    }
+
+    setGameTurns((prevTurns) => {
+      let activePlayer: CellValue = "X";
+
+      if (prevTurns.length > 0 && prevTurns[0].player === "X") {
+        activePlayer = "O";
+      }
+
+      setCurrentPlayer(activePlayer);
+
+      const updatedTurns = [
+        { square: { row, col }, player: activePlayer },
+        ...prevTurns,
+      ];
+      return updatedTurns;
+    });
+  };
 
   return (
     <main>
@@ -15,13 +42,13 @@ function App() {
             name="Player 1"
             symbol="X"
             isPlaying={isPlaying}
-            active={currentPlayer === "X"}
+            isActive={currentPlayer === "X"}
           />
           <Player
             name="Player 2"
             symbol="O"
             isPlaying={isPlaying}
-            active={currentPlayer === "O"}
+            isActive={currentPlayer === "O"}
           />
         </ol>
         {!isPlaying ? (
@@ -32,13 +59,10 @@ function App() {
             }}
           />
         ) : (
-          <GameBoard
-            changePlayer={(symbol) => setCurrentPlayer(symbol)}
-            currentPlayer={currentPlayer}
-            isPlaying={isPlaying}
-          />
+          <GameBoard selectSquare={selectSquare} turns={gameTurns} />
         )}
       </div>
+      <Log gameTurns={gameTurns} />
     </main>
   );
 }

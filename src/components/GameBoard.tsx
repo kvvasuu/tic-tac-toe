@@ -1,11 +1,8 @@
-import { useState } from "react";
-
-type CellValue = "X" | "O" | null;
+import { CellValue, logRecord } from "../types";
 
 interface Props {
-  currentPlayer: "X" | "O";
-  changePlayer: (symbol: "X" | "O") => void;
-  isPlaying: boolean;
+  selectSquare: (symbol: CellValue, rowIndex: number, colIndex: number) => void;
+  turns: logRecord[];
 }
 
 const initialGameBoard: CellValue[][] = [
@@ -14,24 +11,15 @@ const initialGameBoard: CellValue[][] = [
   [null, null, null],
 ];
 
-const GameBoard = ({ currentPlayer, changePlayer, isPlaying }: Props) => {
-  const [gameBoard, setGameBoard] = useState(initialGameBoard);
+const GameBoard = ({ selectSquare, turns }: Props) => {
+  let gameBoard = initialGameBoard;
 
-  const updateBoard = (value: CellValue, row: number, col: number) => {
-    setGameBoard((newBoard) => {
-      [...newBoard.map((inner) => [...inner])];
-      newBoard[row][col] = value;
-      return newBoard;
-    });
-  };
+  for (const turn of turns) {
+    const { square, player } = turn;
+    const { row, col } = square;
 
-  const selectSquare = (symbol: CellValue, row: number, col: number) => {
-    if (symbol || !isPlaying) {
-      return;
-    }
-    updateBoard(currentPlayer, row, col);
-    currentPlayer === "X" ? changePlayer("O") : changePlayer("X");
-  };
+    gameBoard[row][col] = player;
+  }
 
   return (
     <ol id="game-board">
