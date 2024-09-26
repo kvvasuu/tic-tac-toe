@@ -25,27 +25,8 @@ const deriveActivePlayer = (turns: logRecord[]) => {
   return activePlayer;
 };
 
-function App() {
-  const [playerNames, setPlayerNames] = useState({
-    X: "Player 1",
-    O: "Player 2",
-  });
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [gameTurns, setGameTurns] = useState<logRecord[]>([]);
-  const [editing, setEditing] = useState(false);
-
-  const activePlayer = deriveActivePlayer(gameTurns);
-
-  let gameBoard = [...initialGameBoard.map((arr) => [...arr])];
-  let winner: CellValue | undefined;
-
-  for (const turn of gameTurns) {
-    const { square, player } = turn;
-    const { row, col } = square;
-
-    gameBoard[row][col] = player;
-  }
-
+const deriveWinner = (gameBoard: CellValue[][]) => {
+  let winner;
   for (const combination of WINNING_COMBINATIONS) {
     const firstSquare = gameBoard[combination[0].row][combination[0].column];
     const secondSquare = gameBoard[combination[1].row][combination[1].column];
@@ -59,7 +40,28 @@ function App() {
       winner = firstSquare;
     }
   }
+  return winner;
+};
 
+function App() {
+  const [playerNames, setPlayerNames] = useState({
+    X: "Player 1",
+    O: "Player 2",
+  });
+  let gameBoard = [...initialGameBoard.map((arr) => [...arr])];
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [gameTurns, setGameTurns] = useState<logRecord[]>([]);
+  const [editing, setEditing] = useState(false);
+
+  const activePlayer = deriveActivePlayer(gameTurns);
+
+  for (const turn of gameTurns) {
+    const { square, player } = turn;
+    const { row, col } = square;
+
+    gameBoard[row][col] = player;
+  }
+  const winner = deriveWinner(gameBoard);
   const isDraw = !winner && gameTurns.length >= 9;
 
   const selectSquare = (symbol: CellValue, row: number, col: number) => {
@@ -125,7 +127,7 @@ function App() {
             {(winner || isDraw) && (
               <GameOver
                 restartGame={restartGame}
-                winner={playerNames[winner || "X"]}
+                winner={winner && playerNames[winner]}
               />
             )}
             <GameBoard selectSquare={selectSquare} turns={gameBoard} />
