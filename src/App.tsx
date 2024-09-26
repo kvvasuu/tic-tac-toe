@@ -31,8 +31,8 @@ function App() {
 
   const activePlayer = deriveActivePlayer(gameTurns);
 
-  let gameBoard = initialGameBoard;
-  let winner;
+  let gameBoard = [...initialGameBoard.map((arr) => [...arr])];
+  let winner: CellValue | undefined;
 
   for (const turn of gameTurns) {
     const { square, player } = turn;
@@ -58,7 +58,7 @@ function App() {
   const isDraw = !winner && gameTurns.length >= 9;
 
   const selectSquare = (symbol: CellValue, row: number, col: number) => {
-    if (symbol || !isPlaying) {
+    if (symbol || !isPlaying || winner) {
       return;
     }
 
@@ -73,7 +73,9 @@ function App() {
   };
 
   const restartGame = () => {
-    setGameTurns((turns) => (turns = []));
+    gameBoard = initialGameBoard;
+    setGameTurns([]);
+    setIsPlaying(false);
   };
 
   return (
